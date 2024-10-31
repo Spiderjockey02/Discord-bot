@@ -30,7 +30,8 @@ export default class TicketCreate extends Command {
 
 	async run(client: EgglordClient, message: Message<true>) {
 		// get reason
-		const reason = (message.args[0]) ? message.args.join(' ') : client.languageManager.translate(message.guild, 'misc:NO_REASON');
+		let { reason } = await client.commandManager.getArgs(this, message);
+		reason = reason ?? client.languageManager.translate(message.guild, 'misc:NO_REASON');
 
 		// create channel
 		try {

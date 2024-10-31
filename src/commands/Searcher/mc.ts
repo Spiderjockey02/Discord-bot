@@ -31,8 +31,10 @@ export default class Minecraft extends Command {
 			{
 				name: 'port',
 				description: 'Port of the Minecraft server.',
-				type: ApplicationCommandOptionType.String,
+				type: ApplicationCommandOptionType.Integer,
 				required: false,
+				minValue: 0,
+				maxValue: 65535,
 			}],
 		});
 	}
@@ -41,17 +43,16 @@ export default class Minecraft extends Command {
 		if (!message.channel.isSendable()) return;
 
 		// If no ping use 25565
-		if (!message.args[1]) message.args[1] = '25565';
+		const { ip, port } = await client.commandManager.getArgs(this, message);
 
 		// Ping server
-		const { embed, attachment } = await this.createEmbed(client, message.guild, message.args[0], message.args[1]);
+		const { embed, attachment } = await this.createEmbed(client, message.guild, ip, port);
 		message.channel.send({ embeds: [embed], files: attachment == undefined ? undefined : [attachment] });
 	}
 
 	async callback(client: EgglordClient, interaction: ChatInputCommandInteraction<'cached'>) {
 		const IP = interaction.options.getString('ip', true),
-			port = interaction.options.getString('port') ?? '25565';
-
+			port = interaction.options.getInteger('port') ?? 25565;
 
 		const { embed, attachment } = await this.createEmbed(client, interaction.guild, IP, port);
 		await interaction.reply({ embeds: [embed], files: attachment == undefined ? undefined : [attachment] });
@@ -61,12 +62,11 @@ export default class Minecraft extends Command {
 	 * Function for fetching/creating instagram embed.
 	 * @param {client} client The instantiating client
 	 * @param {guild} guild The guild the command was ran in
-	 * @param {channel} channel The channel the command was ran in
 	 * @param {string} IP The IP of the server to ping
-	 * @param {string} port The port that the server runs on
-	 * @returns {embed}
+	 * @param {strinumberng} port The port that the server runs on
+	 * @returns {Promise<{embed: EgglordEmbed, attachment: AttachmentBuilder | undefined}>}
 	*/
-	async createEmbed(client: EgglordClient, guild: Guild | null, IP: string, port: string) {
+	async createEmbed(client: EgglordClient, guild: Guild | null, IP: string, port: number) {
 		try {
 			const response = await fetchFromAPI('games/mc', { ip: IP, port: port });
 			if (response.error) throw new Error(response.error);
@@ -92,7 +92,7 @@ export default class Minecraft extends Command {
 			return { embed, attachment };
 		} catch (err: any) {
 			client.logger.error(`Command: '${this.help.name}' has error: ${err.message}.`);
-			return { embed: new ErrorEmbed(client, guild).setMessage('misc:ERROR_MESSAGE', { ERROR: err.message }) };
+			return { embed: new ErrorEmbed(client, guild).setMessage('misc:ERROR_MESSAGE', { ERROR: err.message }), attachment: undefined };
 		}
 	}
 }

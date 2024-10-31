@@ -39,9 +39,11 @@ export default class Reddit extends Command {
 	async run(client: EgglordClient, message: Message) {
 		if (!message.channel.isSendable()) return;
 
+		const { subreddit, flag } = await client.commandManager.getArgs(this, message);
+
 		// try and retrieve image from reddit
 		try {
-			const embed = await this.fetchPost(client, message.guild, message.args[0], message.args[1]);
+			const embed = await this.fetchPost(client, message.guild, subreddit, flag);
 			await message.channel.send({ embeds: [embed] });
 		} catch (err: any) {
 			if (message.deletable) message.delete();

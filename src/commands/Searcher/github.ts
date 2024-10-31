@@ -28,10 +28,9 @@ export default class Github extends Command {
 	}
 
 	async run(client: EgglordClient, message: Message<true>) {
-		const username = message.args[0];
-		const repo = message.args[1];
+		const { repository, username } = await client.commandManager.getArgs(this, message);
 
-		const embed = await this.createEmbed(client, message.guild, username, repo);
+		const embed = await this.createEmbed(client, message.guild, username, repository);
 		message.channel.send({ embeds: [embed] });
 	}
 

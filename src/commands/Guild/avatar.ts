@@ -29,8 +29,8 @@ export default class Avatar extends Command {
 
 	async run(client: EgglordClient, message: Message<true>) {
 		// Get avatar embed
-		const members = await message.getMember();
-		const embed = this.createAvatarEmbed(client, message.guild, members[0].user);
+		const { user } = await client.commandManager.getArgs(this, message);
+		const embed = this.createAvatarEmbed(client, message.guild, user.user);
 
 		// send embed
 		message.channel.send({ embeds: [embed] });

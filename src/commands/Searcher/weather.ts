@@ -33,9 +33,10 @@ export default class Weather extends Command {
 
 	async run(client: EgglordClient, message: Message) {
 		if (!message.channel.isSendable()) return;
+		const { location } = await client.commandManager.getArgs(this, message);
 
 		// Display weather
-		const embed = await this.fetchWeatherData(client, message.guild, message.args[0]);
+		const embed = await this.fetchWeatherData(client, message.guild, location);
 		message.channel.send({ embeds: [embed] });
 	}
 

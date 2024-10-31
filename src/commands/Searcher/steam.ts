@@ -32,8 +32,9 @@ export default class Steam extends Command {
 
 	async run(client: EgglordClient, message: Message) {
 		if (!message.channel.isSendable()) return;
+		const { username } = await client.commandManager.getArgs(this, message);
 
-		const resp = await this.fetchSteamData(client, message.guild, message.args.join(' '));
+		const resp = await this.fetchSteamData(client, message.guild, username);
 		message.channel.send({ embeds: [resp] });
 	}
 

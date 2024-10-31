@@ -1,7 +1,7 @@
 import { Command, EgglordEmbed, ErrorEmbed } from '../../structures';
 import EgglordClient from '../../base/Egglord';
 import { ApplicationCommandOptionType, Message, ChatInputCommandInteraction } from 'discord.js';
-const max = 100000;
+const maxValue = 2147483647;
 
 /**
  * Random command
@@ -41,11 +41,10 @@ export default class Random extends Command {
 		if (!message.channel.isSendable()) return;
 
 		// Random number and facts command
-		const num1 = parseInt(message.args[0]),
-			num2 = parseInt(message.args[1]);
+		const { min, max } = await client.commandManager.getArgs(this, message);
 
 		// Make sure they follow correct rules
-		if ((num2 < num1) || (num1 === num2) || (num2 > max) || (num1 < 0)) {
+		if ((max < min) || (min === max) || (max > maxValue) || (min < 0)) {
 			if (message.deletable) message.delete();
 			const embed = new ErrorEmbed(client, message.guild)
 				.setMessage('misc:INCORRECT_FORMAT', { EXAMPLE: client.languageManager.translate(message.guild, 'fun/random:USAGE') });
@@ -53,7 +52,7 @@ export default class Random extends Command {
 		}
 
 		// send result
-		const r = Math.floor(Math.random() * (num2 - num1) + num1) + 1;
+		const r = Math.floor(Math.random() * (max - min) + min) + 1;
 		const embed = new EgglordEmbed(client, message.guild)
 			.setColor(client.config.embedColor)
 			.setDescription(client.languageManager.translate(message.guild, 'fun/random:RESPONSE', { NUMBER: r }));
@@ -66,7 +65,7 @@ export default class Random extends Command {
 			num2 = interaction.options.getInteger('max', true);
 
 		// Make sure they follow correct rules
-		if ((num2 < num1) || (num1 === num2) || (num2 > max) || (num1 < 0)) {
+		if ((num2 < num1) || (num1 === num2) || (num2 > maxValue) || (num1 < 0)) {
 			const embed = new ErrorEmbed(client, interaction.guild)
 				.setMessage('misc:INCORRECT_FORMAT', { EXAMPLE:	client.languageManager.translate(interaction.guild, 'fun/random:USAGE') });
 			interaction.reply({ embeds: [embed], ephemeral: true });

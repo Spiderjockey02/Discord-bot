@@ -32,21 +32,16 @@ export default class Lavalink extends Command {
 	async run(client: EgglordClient, message: Message) {
 		if (!message.channel.isSendable()) return;
 
-		const command = client.commandManager.get(`lavalink-${message.args[0]}`);
-		if (command) {
-			command.run(client, message);
-		} else {
-			message.channel.send({ content: 'error' });
-		}
+		const args = await client.commandManager.getArgs(this, message);
+		const command = client.commandManager.get(`lavalink-${args.subCommand}`);
+		if (command) return command.run(client, message);
+		message.channel.send({ content: 'error' });
 	}
 
 	async callback(client: EgglordClient, interaction: ChatInputCommandInteraction<'cached'>) {
 		const command = client.commandManager.get(`lavalink-${interaction.options.getSubcommand()}`);
-		if (command) {
-			command.callback(client, interaction);
-		} else {
-			interaction.reply({ content: 'Error', ephemeral: true });
-		}
+		if (command) return	command.callback(client, interaction);
+		interaction.reply({ content: 'Error', ephemeral: true });
 	}
 }
 

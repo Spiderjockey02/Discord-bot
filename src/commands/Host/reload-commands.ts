@@ -36,7 +36,7 @@ export default class Reload extends Command {
 		if (!message.channel.isSendable()) return;
 
 		// checks to make sure command exists
-		const commandName = message.args[0].toLowerCase();
+		const { command: commandName } = await client.commandManager.getArgs(this, message);
 		const cmd = client.commandManager.get(commandName);
 
 		if (cmd !== undefined) {

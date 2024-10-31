@@ -31,9 +31,11 @@ export default class Help extends Command {
 		if (!message.channel.isSendable()) return;
 
 		// show help embed
-		if (message.args[0] == null) return this.configurePagination(client, message.guild, message, message.author);
+		const { command } = await client.commandManager.getArgs(this, message);
 
-		const embed = await this.createEmbed(client, message.args[0], message.guild);
+		if (command == null) return this.configurePagination(client, message.guild, message, message.author);
+
+		const embed = await this.createEmbed(client, command, message.guild);
 		message.channel.send({ embeds: [embed] });
 	}
 

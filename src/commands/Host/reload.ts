@@ -33,7 +33,8 @@ export default class Reload extends Command {
 	async run(client: EgglordClient, message: Message) {
 		if (!message.channel.isSendable()) return;
 
-		const command = client.commandManager.get(`reload-${message.args[0]}`);
+		const args = await client.commandManager.getArgs(this, message);
+		const command = client.commandManager.get(`reload-${args.subCommand}`);
 		if (command) {
 			command.run(client, message);
 		} else {

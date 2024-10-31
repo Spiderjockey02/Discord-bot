@@ -32,7 +32,8 @@ export default class Eval extends Command {
 		if (!message.channel.isSendable()) return;
 
 		// Evaluated the code
-		const toEval = message.args.join(' ');
+		const { toEval } = await client.commandManager.getArgs(this, message);
+
 		try {
 			if (toEval) {
 				const hrStart = process.hrtime(),

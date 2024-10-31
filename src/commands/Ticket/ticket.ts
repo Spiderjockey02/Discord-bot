@@ -25,9 +25,8 @@ export default class Ticket extends Command {
 	}
 
 	async run(client: EgglordClient, message: Message<true>) {
-		const option = message.args[0];
-
-		const command = client.commandManager.get(`ticket-${option}`);
+		const args = await client.commandManager.getArgs(this, message);
+		const command = client.commandManager.get(`ticket-${args.subCommand}`);
 		if (command) return command.run(client, message);
 		message.channel.send({ content: 'Error' });
 	}

@@ -42,9 +42,7 @@ export default class Fortnite extends Command {
 		if (!message.channel.isSendable()) return;
 
 		// Get platform and user
-		const platform = message.args.shift() as string,
-			username = message.args.join(' ');
-
+		const { platform, username } = await client.commandManager.getArgs(this, message);
 
 		// Fetch fornite account information
 		try {

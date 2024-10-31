@@ -46,9 +46,10 @@ export default class Rainbow6Siege extends Command {
 
 	async run(client: EgglordClient, message: Message) {
 		if (!message.channel.isSendable()) return;
+		const { username, platform, region } = await client.commandManager.getArgs(this, message);
 
 		// display stats
-		const resp = await this.fetchUserData(client, message.guild, message.args[0], message.args[1], message.args[2]);
+		const resp = await this.fetchUserData(client, message.guild, username, platform, region);
 		message.channel.send({ embeds: [resp] });
 	}
 

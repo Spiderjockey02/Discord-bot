@@ -1,11 +1,7 @@
 import { ApplicationCommandOptionData, ApplicationCommandOptionType, ChatInputCommandInteraction, Message } from 'discord.js';
 import EgglordClient from '../../base/Egglord';
-import Command from '../../structures/Command';
+import { Command, ErrorEmbed } from '../../structures';
 
-/**
- * Random command
- * @extends {Command}
-*/
 export default class Random extends Command {
 	constructor(client: EgglordClient) {
 		super(client, {
@@ -28,20 +24,22 @@ export default class Random extends Command {
 	async run(client: EgglordClient, message: Message) {
 		if (!message.channel.isSendable()) return;
 
-		const command = client.commandManager.get(`random-${message.args[0]}`);
-		if (command) {
-			command.run(client, message);
-		} else {
+		try {
+			const { subCommand } = await client.commandManager.getArgs(this, message);
+			const command = client.commandManager.get(`random-${subCommand}`);
+			if (command) return command.run(client, message);
 			message.channel.send({ content: 'error' });
+		} catch (err: any) {
+			console.log(err);
+			const embed = new ErrorEmbed(client, message.guild)
+				.setMessage(err);
+			message.channel.send({ embeds: [embed] });
 		}
 	}
 
 	async callback(client: EgglordClient, interaction: ChatInputCommandInteraction<'cached'>) {
-		const command = client.commandManager.get(`random-${interaction.options}`);
-		if (command) {
-			command.callback(client, interaction);
-		} else {
-			interaction.reply({ content: 'Error', ephemeral: true });
-		}
+		const command = client.commandManager.get(`random-${interaction.options.getSubcommand()}`);
+		if (command) return command.callback(client, interaction);
+		interaction.reply({ content: 'Error', ephemeral: true });
 	}
 }

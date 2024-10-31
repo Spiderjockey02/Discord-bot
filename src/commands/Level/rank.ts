@@ -32,7 +32,7 @@ export default class Rank extends Command {
 
 	async run(client: EgglordClient, message: Message<true>) {
 		// Get user
-		const members = await message.getMember();
+		const { user: member } = await client.commandManager.getArgs(this, message);
 
 		// send 'waiting' message to show client has recieved message
 		const msg = await message.channel.send(
@@ -41,7 +41,7 @@ export default class Rank extends Command {
 
 		// Retrieve Rank from databse
 		try {
-			const res = await this.createRankCard(client, members[0], message.author);
+			const res = await this.createRankCard(client, member, message.author);
 			msg.delete();
 			if (res instanceof AttachmentBuilder) {
 				await message.channel.send({ files: [res] });

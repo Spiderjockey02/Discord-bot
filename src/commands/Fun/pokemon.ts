@@ -28,9 +28,7 @@ export default class Pokemon extends Command {
 
 	async run(client: EgglordClient, message: Message) {
 		if (!message.channel.isSendable()) return;
-
-		// TODO - update to something like message.getArgs('pokemon')
-		const pokemon = message.getArgs()[0];
+		const { pokemon } = await client.commandManager.getArgs(this, message);
 
 		// send 'waiting' message to show bot has recieved message
 		const msg = await message.channel.send({ content:

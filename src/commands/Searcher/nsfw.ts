@@ -33,9 +33,10 @@ export default class NSFW extends Command {
 
 	async run(client: EgglordClient, message: Message) {
 		if (!message.channel.isSendable()) return;
+		const { type } = await client.commandManager.getArgs(this, message);
 
 		try {
-			const image = await fetchFromAPI('nsfw/image', { type: message.args[0] });
+			const image = await fetchFromAPI('nsfw/image', { type });
 			const embed = new EgglordEmbed(client, message.guild)
 				.setImage(image);
 			message.channel.send({ embeds: [embed] });

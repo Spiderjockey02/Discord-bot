@@ -34,8 +34,8 @@ export default class UserInfo extends Command {
 
 	async run(client: EgglordClient, message: Message<true>) {
 		// Get user
-		const members = await message.getMember();
-		const embed = await this.createEmbed(client, members[0]);
+		const { user } = await client.commandManager.getArgs(this, message);
+		const embed = await this.createEmbed(client, user);
 
 		// send user info
 		message.channel.send({ embeds: [embed] });

@@ -34,10 +34,12 @@ export default class Poll extends Command {
 	}
 
 	async run(client: EgglordClient, message: Message<true>) {
+		const { poll } = await client.commandManager.getArgs(this, message);
+
 		// Send poll to channel
 		const embed = new EgglordEmbed(client, message.guild)
 			.setTitle('guild/poll:TITLE', { USER: message.author.displayName })
-			.setDescription(message.args.join(' '))
+			.setDescription(poll)
 			.setFooter({ text: client.languageManager.translate(message.guild, 'guild/poll:FOOTER') });
 		message.channel.send({ embeds: [embed] }).then(async (msg) => {
 			// Add reactions to message

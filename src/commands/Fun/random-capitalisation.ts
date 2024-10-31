@@ -26,10 +26,10 @@ export default class RandomCaps extends Command {
 		});
 	}
 
-	async run(_client: EgglordClient, message: Message) {
+	async run(client: EgglordClient, message: Message) {
 		if (!message.channel.isSendable()) return;
 
-		const text = message.args.join(' '),
+		const { text } = await client.commandManager.getArgs(this, message) as {text: string},
 			rndCaps = text.toLowerCase().split('').map(c => Math.random() < 0.5 ? c : c.toUpperCase()).join('');
 		message.channel.send({ content: rndCaps });
 	}

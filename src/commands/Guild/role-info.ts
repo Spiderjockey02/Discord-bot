@@ -33,10 +33,9 @@ export default class RoleInfo extends Command {
 	}
 
 	async run(client: EgglordClient, message: Message<true>) {
-		// Check to see if a role was mentioned
-		const roles = message.getRole();
+		const { role } = await client.commandManager.getArgs(this, message);
 
-		const embed = this.createEmbed(client, roles[0], message.author);
+		const embed = this.createEmbed(client, role, message.author);
 		message.channel.send({ embeds: [embed] });
 	}
 

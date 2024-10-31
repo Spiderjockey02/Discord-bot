@@ -32,11 +32,11 @@ export default class Twitch extends Command {
 
 	async run(client: EgglordClient, message: Message) {
 		if (!message.channel.isSendable()) return;
-		const user = message.args[0];
+		const { username } = await client.commandManager.getArgs(this, message);
 
 		// fetch data
 		try {
-			const embed = await this.fetchTwitchData(client, message.guild, user);
+			const embed = await this.fetchTwitchData(client, message.guild, username);
 			message.channel.send({ embeds: [embed] });
 		} catch (err: any) {
 			if (message.deletable) message.delete();

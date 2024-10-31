@@ -27,8 +27,10 @@ export default class TicketClose extends Command {
 	}
 
 	async run(client: EgglordClient, message: Message<true>) {
+		const { transcript } = await client.commandManager.getArgs(this, message);
+
 		const channel = message.channel,
-			generateTranscript = Boolean(message.args[0]);
+			generateTranscript = Boolean(transcript);
 
 		// will close the current ticket channel
 		const regEx = /ticket-\d{18}/g;
